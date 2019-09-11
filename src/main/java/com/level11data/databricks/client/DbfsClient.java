@@ -2,9 +2,18 @@ package com.level11data.databricks.client;
 
 import com.level11data.databricks.client.entities.dbfs.*;
 import com.level11data.databricks.session.WorkspaceSession;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,9 +60,24 @@ public class DbfsClient extends AbstractDatabricksClient {
     }
 
     public void put(PutRequestDTO putRequestDTO) throws HttpException {
-        String pathSuffix = ENDPOINT_TARGET + "/put";
+        String pathSuffix = String.format("%s/%s/put", Session.getEndpoint(), ENDPOINT_TARGET);
 
-        Response response = Session.getRequestBuilder(pathSuffix).post(Entity.json(putRequestDTO));
+        Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
+        WebTarget server = client.target(pathSuffix);
+        MultiPart multiPart = new MultiPart();
+
+        FileDataBodyPart fileOption =
+          new FileDataBodyPart("file", new File(putRequestDTO.Contents), MediaType.MULTIPART_FORM_DATA_TYPE);
+        FormDataBodyPart dbfsPathOption = new FormDataBodyPart("path", putRequestDTO.Path);
+        FormDataBodyPart overwiteOption = new FormDataBodyPart("overwrite", putRequestDTO.Overwrite + "");
+
+        multiPart.bodyPart(fileOption);
+        multiPart.bodyPart(dbfsPathOption);
+        multiPart.bodyPart(overwiteOption);
+
+        Response response = server.request(MediaType.MULTIPART_FORM_DATA)
+            .header("Authorization", String.format("Bearer %s", Session.getToken()))
+            .post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
 
         checkResponse(response);
     }
@@ -117,6 +141,19 @@ public class DbfsClient extends AbstractDatabricksClient {
         queryParams.put("path", path);
         queryParams.put("offset", offset);
         queryParams.put("length",length);
+
+        Response response = Session.getRequestBuilder(pathSuffix, queryParams).get();
+
+        checkResponse(response);
+        return response.readEntity(ReadResponseDTO.class);
+    }
+
+    public ReadResponseDTO read(String path, long offset) throws HttpException {
+        String pathSuffix = ENDPOINT_TARGET + "/read";
+
+        Map<String, Object> queryParams = new HashMap<>();
+        queryParams.put("path", path);
+        queryParams.put("offset", offset);
 
         Response response = Session.getRequestBuilder(pathSuffix, queryParams).get();
 

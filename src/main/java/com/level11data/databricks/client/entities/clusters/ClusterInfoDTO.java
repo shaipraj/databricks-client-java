@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -116,6 +117,12 @@ public class ClusterInfoDTO {
 
     @JsonProperty("spark_env_vars")
     public Map<String, String> SparkEnvironmentVariables;
+
+    @JsonProperty("init_scripts")
+    public List<InitScriptDTO> InitScripts;
+
+    @JsonProperty("instance_pool_id")
+    public String InstancePoolId;
 
     @Override
     public String toString() {

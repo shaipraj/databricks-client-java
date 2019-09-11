@@ -548,5 +548,13 @@ public class WorkspaceSession {
     public ScalaNotebookBuilder createScalaNotebook(File file) throws WorkspaceConfigException {
         return new ScalaNotebookBuilder(getWorkspaceClient(), file);
     }
+
+    public URI getEndpoint() {
+        return Endpoint;
+    }
+
+    public String getToken() {
+      return _databricksClientConfig.getWorkspaceToken();
+    }
 }
 
