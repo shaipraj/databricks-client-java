@@ -21,6 +21,9 @@ public class ClusterInfoDTO {
     @JsonProperty("cluster_id")
     public String ClusterId;
 
+    @JsonProperty("instance_pool_id")
+    public String InstancePoolId;
+
     @JsonProperty("creator_user_name")
     public String CreatorUserName;
 
@@ -120,9 +123,6 @@ public class ClusterInfoDTO {
 
     @JsonProperty("init_scripts")
     public List<InitScriptDTO> InitScripts;
-
-    @JsonProperty("instance_pool_id")
-    public String InstancePoolId;
 
     @Override
     public String toString() {
