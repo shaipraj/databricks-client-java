@@ -77,6 +77,7 @@ public class DbfsClient extends AbstractDatabricksClient {
 
         Response response = server.request(MediaType.MULTIPART_FORM_DATA)
             .header("Authorization", String.format("Bearer %s", Session.getToken()))
+            .header("User-Agent", Session.getUserAgent())
             .post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
 
         checkResponse(response);

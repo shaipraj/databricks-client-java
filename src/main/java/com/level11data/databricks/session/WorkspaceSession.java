@@ -125,6 +125,7 @@ public class WorkspaceSession {
                 return target
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + _databricksClientConfig.getWorkspaceToken())
+                        .header(HttpHeaders.USER_AGENT, _databricksClientConfig.getUserAgent())
                         .accept(MediaType.APPLICATION_JSON);
             } else {
                 return _httpClient
@@ -132,6 +133,7 @@ public class WorkspaceSession {
                         .path(path)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + _databricksClientConfig.getWorkspaceToken())
+                        .header(HttpHeaders.USER_AGENT, _databricksClientConfig.getUserAgent())
                         .accept(MediaType.APPLICATION_JSON);
             }
         } else {
@@ -144,6 +146,7 @@ public class WorkspaceSession {
 
                 return target
                         .request(MediaType.APPLICATION_JSON_TYPE)
+                         .header(HttpHeaders.USER_AGENT, _databricksClientConfig.getUserAgent())
                         .accept(MediaType.APPLICATION_JSON);
             } else {
                 return _httpClient
@@ -151,6 +154,7 @@ public class WorkspaceSession {
                         .path(path)
                         .register(getUserPassAuth())
                         .request(MediaType.APPLICATION_JSON_TYPE)
+                        .header(HttpHeaders.USER_AGENT, _databricksClientConfig.getUserAgent())
                         .accept(MediaType.APPLICATION_JSON);
             }
         }
@@ -648,6 +652,10 @@ public class WorkspaceSession {
 
     public String getToken() {
         return _databricksClientConfig.getWorkspaceToken();
+    }
+
+    public String getUserAgent() {
+        return _databricksClientConfig.getUserAgent();
     }
 }
 
